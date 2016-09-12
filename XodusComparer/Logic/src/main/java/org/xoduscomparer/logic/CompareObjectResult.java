@@ -13,6 +13,16 @@ public class CompareObjectResult {
     public CompareObjectResult() {
     }
 
+    public CompareObjectResult(CompareState state, Object value) {
+        this(state, value, null);
+    }
+    
+    public CompareObjectResult(CompareState state, Object value, Object value2) {
+        this.state = state;
+        this.value = value;
+        this.value2 = value2;
+    }
+
     public CompareState getState() {
         return state;
     }

@@ -1,6 +1,6 @@
 package org.xoduscomparer.logic;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  *
@@ -9,7 +9,7 @@ import java.util.Map;
 public class CompareTableResult {
     
     private CompareState state;    
-    private Map<String, CompareObjectResult> objects;
+    private List<CompareObjectResult> objects;
 
     public CompareTableResult() {
     }
@@ -22,11 +22,11 @@ public class CompareTableResult {
         this.state = state;
     }
     
-    public Map<String, CompareObjectResult> getObjects() {
+    public List<CompareObjectResult> getObjects() {
         return objects;
     }
 
-    public void setObjects(Map<String, CompareObjectResult> objects) {
+    public void setObjects(List<CompareObjectResult> objects) {
         this.objects = objects;
     }
 }
