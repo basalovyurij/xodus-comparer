@@ -1,14 +1,13 @@
 -------------------------------------------------------------------------------
 Test set: org.xoduscomparer.logic.CompareDbTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.706 sec <<< FAILURE!
-test1(org.xoduscomparer.logic.CompareDbTest)  Time elapsed: 1.634 sec  <<< FAILURE!
-java.lang.AssertionError: expected:<18> but was:<1>
-	at org.junit.Assert.fail(Assert.java:88)
-	at org.junit.Assert.failNotEquals(Assert.java:834)
-	at org.junit.Assert.assertEquals(Assert.java:645)
-	at org.junit.Assert.assertEquals(Assert.java:631)
-	at org.xoduscomparer.logic.CompareDbTest.test1(CompareDbTest.java:59)
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 1.366 sec <<< FAILURE!
+test1(org.xoduscomparer.logic.CompareDbTest)  Time elapsed: 1.188 sec  <<< ERROR!
+jetbrains.exodus.env.EnvironmentClosedException: Environment is already closed
+	at jetbrains.exodus.env.EnvironmentImpl.close(EnvironmentImpl.java:366)
+	at jetbrains.exodus.entitystore.PersistentEntityStoreImpl.close(PersistentEntityStoreImpl.java:1659)
+	at org.xoduscomparer.logic.CompareDb.compare(CompareDb.java:43)
+	at org.xoduscomparer.logic.CompareDbTest.test1(CompareDbTest.java:57)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

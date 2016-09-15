@@ -25,9 +25,6 @@ public class CompareDb {
     private final String pathDb1;
     private final String pathDb2;
 
-    private Environment env1;
-    private Environment env2;
-
     private PersistentEntityStore store1;
     private PersistentEntityStore store2;
 
@@ -37,51 +34,42 @@ public class CompareDb {
     }
 
     public CompareDbResult compare() {
-        env1 = Environments.newInstance(pathDb1);
-        env2 = Environments.newInstance(pathDb2);
-
-        Set<String> tables1 = new HashSet<>(getTables(env1));
-        Set<String> tables2 = new HashSet<>(getTables(env2));
-
-        env1.close();
-        env2.close();        
-
-        return compareTables(tables1, tables2);
-    }
-
-    private CompareDbResult compareTables(Set<String> s1, Set<String> s2) {
         store1 = PersistentEntityStores.newInstance(pathDb1);
         store2 = PersistentEntityStores.newInstance(pathDb2);
 
         try {
-            CompareResult<String> tableCompareResults = compare(s1, s2);
-
-            CompareDbResult result = new CompareDbResult();
-            result.setTables(new HashMap<>());
-
-            tableCompareResults.onlyFirst.forEach(t -> {
-                CompareTableResult cmp = compareObjects(getTableContent(store1, t), new HashMap<>());
-                cmp.setState(CompareState.EXIST_ONLY_FIRST);
-                result.getTables().put(t, cmp);
-            });
-
-            tableCompareResults.intersection.forEach(t -> {
-                CompareTableResult cmp = compareObjects(getTableContent(store1, t), getTableContent(store2, t));
-                cmp.setState(CompareState.EXIST_BOTH);
-                result.getTables().put(t, cmp);
-            });
-
-            tableCompareResults.onlySecond.forEach(t -> {
-                CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store1, t));
-                cmp.setState(CompareState.EXIST_ONLY_SECOND);
-                result.getTables().put(t, cmp);
-            });
-
-            return result;
+            return compareTables(new HashSet<>(getTables(store1)), new HashSet<>(getTables(store2)));
         } finally {
             store1.close();
             store2.close();
         }
+    }
+
+    private CompareDbResult compareTables(Set<String> s1, Set<String> s2) {
+        CompareResult<String> tableCompareResults = compare(s1, s2);
+
+        CompareDbResult result = new CompareDbResult();
+        result.setTables(new HashMap<>());
+
+        tableCompareResults.onlyFirst.forEach(t -> {
+            CompareTableResult cmp = compareObjects(getTableContent(store1, t), new HashMap<>());
+            cmp.setState(CompareState.EXIST_ONLY_FIRST);
+            result.getTables().put(t, cmp);
+        });
+
+        tableCompareResults.intersection.forEach(t -> {
+            CompareTableResult cmp = compareObjects(getTableContent(store1, t), getTableContent(store2, t));
+            cmp.setState(CompareState.EXIST_BOTH);
+            result.getTables().put(t, cmp);
+        });
+
+        tableCompareResults.onlySecond.forEach(t -> {
+            CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store1, t));
+            cmp.setState(CompareState.EXIST_ONLY_SECOND);
+            result.getTables().put(t, cmp);
+        });
+
+        return result;
     }
 
     private CompareTableResult compareObjects(Map<Long, Entity> s1, Map<Long, Entity> s2) {
@@ -120,14 +108,18 @@ public class CompareDb {
         EntityIterable entities = txn.getAll(tableName);
         for (Entity entity : entities) {
             result.put(entity.getId().getLocalId(), entity);
-        }        
+        }
         txn.abort();
 
         return result;
     }
 
-    private Collection<String> getTables(Environment env) {
-        return env.computeInTransaction(t -> env.getAllStoreNames(t));
+    private Collection<String> getTables(PersistentEntityStore store) {
+        StoreTransaction txn = store.beginReadonlyTransaction();
+        Collection<String> result = txn.getEntityTypes();
+        txn.abort();
+
+        return result;
     }
 
     private <T> CompareResult<T> compare(Set<T> s1, Set<T> s2) {
