@@ -1,13 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.xoduscomparer.logic;
 
+import org.xoduscomparer.logic.model.CompareTableResult;
+import org.xoduscomparer.logic.model.CompareDbResult;
+import org.xoduscomparer.logic.model.CompareState;
+import org.xoduscomparer.logic.model.CompareObjectResult;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,27 +15,94 @@ import jetbrains.exodus.entitystore.Entity;
 import jetbrains.exodus.entitystore.PersistentEntityStore;
 import jetbrains.exodus.entitystore.PersistentEntityStores;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.xoduscomparer.logic.helpers.model.EntityProperty;
+import org.xoduscomparer.logic.helpers.model.EntityView;
 
 /**
  *
  * @author yurij
  */
+@RunWith(Parameterized.class)
 public class CompareDbTest {
 
-    public CompareDbTest() {
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+            {
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test2");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                new CompareDbResult(new HashMap<String, CompareTableResult>() {
+                    {
+                        put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_DIFF,
+                                        new EntityView() {
+                                    {
+                                        setProperties(Arrays.asList(
+                                                new EntityProperty() {
+                                            {
+                                                setName("123");
+                                                setValue("test");
+                                            }
+                                        }
+                                        ));
+                                    }
+                                },
+                                        new EntityView() {
+                                    {
+                                        setProperties(Arrays.asList(
+                                                new EntityProperty() {
+                                            {
+                                                setName("123");
+                                                setValue("test2");
+                                            }
+                                        }
+                                        ));
+                                    }
+                                }
+                                ));
+                            }
+                        }));
+                    }
+                })
+            }
+        });
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
+    private final String db1;
+    private final String db2;
+    private final CompareDbResult expected;
 
-    @AfterClass
-    public static void tearDownClass() {
+    public CompareDbTest(String db1, String db2, CompareDbResult expected) {
+        this.db1 = db1;
+        this.db2 = db2;
+        this.expected = expected;
     }
 
     @Before
@@ -45,54 +111,20 @@ public class CompareDbTest {
 
     @After
     public void tearDown() {
+        new File(db1).delete();
+        new File(db2).delete();
     }
 
     @Test
     public void test1() {
-        String db1 = createDb1();
-        String db2 = createDb2();
+        CompareDb cmp = new CompareDb(db1, db2);
+        CompareDbResult result = cmp.compare();
 
-        try {
-            CompareDb cmp = new CompareDb(db1, db2);
-            CompareDbResult result = cmp.compare();
-
-            assertEquals(result.getTables().size(), 1);
-        } finally {
-            new File(db1).delete();
-            new File(db2).delete();
-        }
+        assertEquals(result, expected);
     }
 
-    private String createDb1() {
-        return createDb(new HashMap<String, List<Map<String, Comparable>>>() {
-            {
-                put("test", Arrays.asList(
-                        new HashMap<String, Comparable>() {
-                    {
-                        put("123", "test");
-                    }
-                }
-                ));
-            }
-        });
-    }
-
-    private String createDb2() {
-        return createDb(new HashMap<String, List<Map<String, Comparable>>>() {
-            {
-                put("test", Arrays.asList(
-                        new HashMap<String, Comparable>() {
-                    {
-                        put("123", "test2");
-                    }
-                }
-                ));
-            }
-        });
-    }
-
-    private String createDb(Map<String, List<Map<String, Comparable>>> data) {
-        String path = "/tmp/" + UUID.randomUUID().toString();
+    private static String createDb(Map<String, List<Map<String, Comparable>>> data) {
+        String path = System.getProperty("java.io.tmpdir") + "/" + UUID.randomUUID().toString();
 
         new File(path).mkdir();
 

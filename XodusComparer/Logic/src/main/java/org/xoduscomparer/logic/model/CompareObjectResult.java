@@ -1,4 +1,6 @@
-package org.xoduscomparer.logic;
+package org.xoduscomparer.logic.model;
+
+import java.util.Objects;
 
 /**
  *
@@ -45,5 +47,35 @@ public class CompareObjectResult {
 
     public void setValue2(Object value2) {
         this.value2 = value2;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 13 * hash + Objects.hashCode(this.state);
+        hash = 13 * hash + Objects.hashCode(this.value);
+        hash = 13 * hash + Objects.hashCode(this.value2);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CompareObjectResult other = (CompareObjectResult) obj;
+        if (this.state != other.state) {
+            return false;
+        }
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        return Objects.equals(this.value2, other.value2);
     }
 }

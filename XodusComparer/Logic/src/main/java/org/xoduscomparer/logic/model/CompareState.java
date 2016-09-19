@@ -1,4 +1,4 @@
-package org.xoduscomparer.logic;
+package org.xoduscomparer.logic.model;
 
 /**
  *

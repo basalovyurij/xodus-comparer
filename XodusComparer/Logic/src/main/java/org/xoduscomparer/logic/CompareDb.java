@@ -1,9 +1,12 @@
 package org.xoduscomparer.logic;
 
+import org.xoduscomparer.logic.model.CompareObjectResult;
+import org.xoduscomparer.logic.model.CompareDbResult;
+import org.xoduscomparer.logic.model.CompareTableResult;
+import org.xoduscomparer.logic.model.CompareState;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,9 +15,8 @@ import jetbrains.exodus.entitystore.Entity;
 import jetbrains.exodus.entitystore.EntityIterable;
 import jetbrains.exodus.entitystore.PersistentEntityStore;
 import jetbrains.exodus.entitystore.PersistentEntityStores;
-import jetbrains.exodus.entitystore.StoreTransaction;
-import jetbrains.exodus.env.Environment;
-import jetbrains.exodus.env.Environments;
+import org.xoduscomparer.logic.helpers.Transform;
+import org.xoduscomparer.logic.helpers.model.EntityView;
 
 /**
  *
@@ -72,54 +74,51 @@ public class CompareDb {
         return result;
     }
 
-    private CompareTableResult compareObjects(Map<Long, Entity> s1, Map<Long, Entity> s2) {
+    private CompareTableResult compareObjects(Map<Long, EntityView> s1, Map<Long, EntityView> s2) {
         CompareResult<Long> objectCompareResults = compare(s1, s2);
 
         CompareTableResult result = new CompareTableResult();
-        result.setObjects(new LinkedList<>());
+        result.setObjects(new HashMap<>());
 
         // TODO
         objectCompareResults.onlyFirst.forEach(t -> {
-            result.getObjects().add(new CompareObjectResult(CompareState.EXIST_ONLY_FIRST, s1.get(t)));
+            result.getObjects().put(t, new CompareObjectResult(CompareState.EXIST_ONLY_FIRST, s1.get(t)));
         });
 
         objectCompareResults.intersection.forEach(t -> {
-            Entity o1 = s1.get(t);
-            Entity o2 = s2.get(t);
+            EntityView o1 = s1.get(t);
+            EntityView o2 = s2.get(t);
 
-            if (o1.compareTo(o2) == 0) {
-                result.getObjects().add(new CompareObjectResult(CompareState.EXIST_BOTH_EQUAL, o1));
+            if (o1.equals(o2)) {
+                result.getObjects().put(t, new CompareObjectResult(CompareState.EXIST_BOTH_EQUAL, o1));
             } else {
-                result.getObjects().add(new CompareObjectResult(CompareState.EXIST_BOTH_DIFF, o1, o2));
+                result.getObjects().put(t, new CompareObjectResult(CompareState.EXIST_BOTH_DIFF, o1, o2));
             }
         });
 
         objectCompareResults.onlySecond.forEach(t -> {
-            result.getObjects().add(new CompareObjectResult(CompareState.EXIST_ONLY_SECOND, s2.get(t)));
+            result.getObjects().put(t, new CompareObjectResult(CompareState.EXIST_ONLY_SECOND, s2.get(t)));
         });
 
         return result;
     }
 
-    private Map<Long, Entity> getTableContent(PersistentEntityStore store, String tableName) {
-        Map<Long, Entity> result = new HashMap<>();
+    private Map<Long, EntityView> getTableContent(PersistentEntityStore store, String tableName) {
+        Map<Long, EntityView> result = new HashMap<>();
 
-        StoreTransaction txn = store.beginReadonlyTransaction();
-        EntityIterable entities = txn.getAll(tableName);
-        for (Entity entity : entities) {
-            result.put(entity.getId().getLocalId(), entity);
-        }
-        txn.abort();
+        store.computeInReadonlyTransaction(txn -> {
+            EntityIterable entities = txn.getAll(tableName);
+            for (Entity entity : entities) {
+                result.put(entity.getId().getLocalId(), Transform.asLightView(entity));
+            }
+            return true;
+        });
 
         return result;
     }
 
     private Collection<String> getTables(PersistentEntityStore store) {
-        StoreTransaction txn = store.beginReadonlyTransaction();
-        Collection<String> result = txn.getEntityTypes();
-        txn.abort();
-
-        return result;
+        return store.computeInReadonlyTransaction(txn -> txn.getEntityTypes());
     }
 
     private <T> CompareResult<T> compare(Set<T> s1, Set<T> s2) {

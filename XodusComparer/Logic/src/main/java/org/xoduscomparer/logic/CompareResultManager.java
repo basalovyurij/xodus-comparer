@@ -1,5 +1,6 @@
 package org.xoduscomparer.logic;
 
+import org.xoduscomparer.logic.model.CompareDbResult;
 import com.alibaba.fastjson.JSON;
 import java.io.File;
 import java.io.FileWriter;
