@@ -2,19 +2,27 @@ var app = angular.module('todoapp', [
     'ngCookies',
     'ngResource',
     'ngSanitize',
-    'ngRoute'
+    'ngRoute',
+    'ng-file-model'
 ]);
 
 app.config(function ($routeProvider) {
-    $routeProvider.when('/', {
-        templateUrl: 'views/list.html',
-        controller: 'ListCtrl'
-    }).when('/create', {
-        templateUrl: 'views/create.html',
-        controller: 'CreateCtrl'
-    }).otherwise({
-        redirectTo: '/'
-    })
+    $routeProvider
+            .when('/', {
+                templateUrl: 'views/setup.html',
+                controller: 'SetupController'
+            })
+            .when('/list', {
+                templateUrl: 'views/list.html',
+                controller: 'ListCtrl'
+            })
+            .when('/create', {
+                templateUrl: 'views/create.html',
+                controller: 'CreateCtrl'
+            })
+            .otherwise({
+                redirectTo: '/'
+            })
 });
 
 app.controller('ListCtrl', function ($scope, $http) {
