@@ -23,6 +23,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.xoduscomparer.logic.helpers.model.EntityProperty;
 import org.xoduscomparer.logic.helpers.model.EntityView;
+import org.xoduscomparer.logic.helpers.model.PropertyType;
 
 /**
  *
@@ -62,30 +63,12 @@ public class CompareDbTest {
                         put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
                             {
                                 put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_DIFF,
-                                        new EntityView() {
-                                    {
-                                        setProperties(Arrays.asList(
-                                                new EntityProperty() {
-                                            {
-                                                setName("123");
-                                                setValue("test");
-                                            }
-                                        }
-                                        ));
-                                    }
-                                },
-                                        new EntityView() {
-                                    {
-                                        setProperties(Arrays.asList(
-                                                new EntityProperty() {
-                                            {
-                                                setName("123");
-                                                setValue("test2");
-                                            }
-                                        }
-                                        ));
-                                    }
-                                }
+                                        new EntityView("0", "test", null, "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null),
+                                        new EntityView("0", "test", null, "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test2")
+                                        ), null, null)
                                 ));
                             }
                         }));
