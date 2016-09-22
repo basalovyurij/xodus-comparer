@@ -1,0 +1,13 @@
+{
+    "elements": {},
+    "attributes": {
+        "uib-dropdown-menu": {},
+        "uib-dropdown": {
+            "context": "div"
+        },
+        "uib-dropdown-toggle": {
+            "context": "button"
+        },
+        "bs-dropdown": {}
+    }
+}

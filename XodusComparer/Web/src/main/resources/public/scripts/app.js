@@ -1,16 +1,21 @@
 var app = angular.module('todoapp', [
-    'ngCookies',
-    'ngResource',
-    'ngSanitize',
     'ngRoute',
-    'ng-file-model'
+    'ui.bootstrap'
 ]);
 
 app.config(function ($routeProvider) {
     $routeProvider
-            .when('/', {
+            .when('/setup', {
                 templateUrl: 'views/setup.html',
                 controller: 'SetupController'
+            })
+            .when('/setup/new', {
+                templateUrl: 'views/setup-new.html',
+                controller: 'SetupNewController'
+            })
+            .when('/setup/load', {
+                templateUrl: 'views/setup-old.html',
+                controller: 'SetupOldController'
             })
             .when('/list', {
                 templateUrl: 'views/list.html',
@@ -21,7 +26,7 @@ app.config(function ($routeProvider) {
                 controller: 'CreateCtrl'
             })
             .otherwise({
-                redirectTo: '/'
+                redirectTo: '/setup'
             })
 });
 

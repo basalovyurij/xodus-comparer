@@ -15,6 +15,7 @@ import jetbrains.exodus.entitystore.Entity;
 import jetbrains.exodus.entitystore.EntityIterable;
 import jetbrains.exodus.entitystore.PersistentEntityStore;
 import jetbrains.exodus.entitystore.PersistentEntityStores;
+import jetbrains.exodus.env.Environments;
 import org.xoduscomparer.logic.helpers.Transform;
 import org.xoduscomparer.logic.helpers.model.EntityView;
 
@@ -26,18 +27,24 @@ public class CompareDb {
 
     private final String pathDb1;
     private final String pathDb2;
+    private final String key;
 
     private PersistentEntityStore store1;
     private PersistentEntityStore store2;
 
     public CompareDb(String pathDb1, String pathDb2) {
+        this(pathDb1, pathDb2, null);
+    }
+    
+    public CompareDb(String pathDb1, String pathDb2, String key) {
         this.pathDb1 = pathDb1;
         this.pathDb2 = pathDb2;
+        this.key = key;
     }
 
     public CompareDbResult compare() {
-        store1 = PersistentEntityStores.newInstance(pathDb1);
-        store2 = PersistentEntityStores.newInstance(pathDb2);
+        store1 = PersistentEntityStores.newInstance(Environments.newInstance(pathDb1), key);
+        store2 = PersistentEntityStores.newInstance(Environments.newInstance(pathDb2), key);
 
         try {
             return compareTables(new HashSet<>(getTables(store1)), new HashSet<>(getTables(store2)));
@@ -118,7 +125,8 @@ public class CompareDb {
     }
 
     private Collection<String> getTables(PersistentEntityStore store) {
-        return store.computeInReadonlyTransaction(txn -> txn.getEntityTypes());
+        return store.computeInReadonlyTransaction(txn -> 
+                txn.getEntityTypes());
     }
 
     private <T> CompareResult<T> compare(Set<T> s1, Set<T> s2) {

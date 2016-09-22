@@ -1,5 +1,9 @@
 package org.xoduscomparer.web;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.xoduscomparer.logic.CompareDb;
+import org.xoduscomparer.logic.model.CompareDbResult;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
@@ -11,28 +15,19 @@ public class UtilsResource {
     //private final TodoService todoService;
 
     public UtilsResource() {
-        //this.todoService = todoService;
         setupEndpoints();
     }
 
     private void setupEndpoints() {
-        post(API_CONTEXT + "/todos", "application/json", (request, response) -> {
-            //todoService.createNewTodo(request.body());
-            response.status(201);
+        post(API_CONTEXT + "/utils", "application/json", (request, response) -> {
+            JSONObject obj = JSON.parseObject(request.body());
+            
+            CompareDb cmp = new CompareDb(obj.getString("db1"), obj.getString("db2"), obj.getString("key"));
+            Context.getInstance().setCompareDbResult(cmp.compare());
+                        
+            response.status(200);
             return response;
         }, new JsonTransformer());
-/*
-        get(API_CONTEXT + "/todos/:id", "application/json", (request, response)
-
-                -> todoService.find(request.params(":id")), new JsonTransformer());
-
-        get(API_CONTEXT + "/todos", "application/json", (request, response)
-
-                -> todoService.findAll(), new JsonTransformer());
-
-        put(API_CONTEXT + "/todos/:id", "application/json", (request, response)
-
-                -> todoService.update(request.params(":id"), request.body()), new JsonTransformer());*/
     }
 
 }

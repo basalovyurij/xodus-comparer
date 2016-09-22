@@ -14,6 +14,7 @@ import java.util.UUID;
 import jetbrains.exodus.entitystore.Entity;
 import jetbrains.exodus.entitystore.PersistentEntityStore;
 import jetbrains.exodus.entitystore.PersistentEntityStores;
+import jetbrains.exodus.env.Environments;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -148,7 +149,7 @@ public class CompareDbTest {
 
         new File(path).mkdir();
 
-        final PersistentEntityStore entityStore = PersistentEntityStores.newInstance(path);
+        final PersistentEntityStore entityStore = PersistentEntityStores.newInstance(Environments.newInstance(path), null);
         entityStore.executeInTransaction(txn -> {
             data.entrySet().forEach(table -> {
                 table.getValue().forEach(item -> {

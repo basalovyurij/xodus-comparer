@@ -1,0 +1,32 @@
+<form name="setupForm">
+    <div class="form-group" data-ng-class="{'has-error': (data.db1.$invalid && data.db1.$dirty)}">
+        <label for="db1">Выберите первую БД для сравнения</label>
+        <input class="form-control" data-ng-required="true" ng-model="data.db1" id="db1" placeholder="Путь к папке с БД">
+    </div>
+    
+    <div class="form-group" data-ng-class="{'has-error': (data.db2.$invalid && data.db2.$dirty)}">
+        <label for="db2">Выберите вторую БД для сравнения</label>
+        <input class="form-control" data-ng-required="true" ng-model="data.db2" id="db2" placeholder="Путь к папке с БД">
+    </div>
+    
+     <div class="form-group" data-ng-class="{'has-error': (data.key.$invalid && data.key.$dirty)}">
+            <label for="key">key</label>
+            <div class="input-group">
+                <input id="key"  data-ng-required="true" ng-model="data.key" class="form-control" placeholder="Ключ открытия БД">
+                <div class="input-group-btn">
+                    <div class="btn-group" uib-dropdown>
+                        <button id="simple-dropdown"  type="button" class="btn btn-default" uib-dropdown-toggle>
+                            Predefined keys <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                            <li ng-repeat="key in predefinedKeys">
+                                <a href data-ng-click="applyKey(key)">{{key.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <button type="submit" ng-click="submit()" class="btn btn-default">Сравнить</button>
+</form>
