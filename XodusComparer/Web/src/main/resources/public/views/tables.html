@@ -1,0 +1,31 @@
+<a class="btn btn-primary pull-right" href="#/save">
+    <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+    Сохранить сравнение
+</a>
+
+<h1>Список таблиц</h1>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            Название
+        </th>
+        <th>
+            Статус
+        </th>
+        <th></th>
+    </tr>
+    <tr ng-repeat="item in data">
+        <td>
+            {{item.name}}
+        </td>
+        <td>
+            {{item.state}}
+        </td>
+        <td>
+            <a href="#/type/{{item.name}}">
+                <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+            </a>
+        </td>
+    </tr>
+</table>

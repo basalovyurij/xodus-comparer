@@ -16,7 +16,7 @@ app.controller('SetupNewController', function ($scope, $http, $location) {
     $scope.submit = function () {
         if ($scope.setupForm.$valid) {
             $http
-                    .post('/api/v1/utils', $scope.data)
+                    .post('/api/v1/utils/compare', $scope.data)
                     .success(function (data) {
                         $location.path('/tables');
                     });

@@ -17,13 +17,13 @@ app.config(function ($routeProvider) {
                 templateUrl: 'views/setup-old.html',
                 controller: 'SetupOldController'
             })
-            .when('/list', {
-                templateUrl: 'views/list.html',
-                controller: 'ListCtrl'
+            .when('/tables', {
+                templateUrl: 'views/tables.html',
+                controller: 'TablesCtrl'
             })
-            .when('/create', {
-                templateUrl: 'views/create.html',
-                controller: 'CreateCtrl'
+            .when('/type/:name', {
+                templateUrl: 'views/type.html',
+                controller: 'TypeCtrl'
             })
             .otherwise({
                 redirectTo: '/setup'

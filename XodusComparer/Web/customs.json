@@ -1,5 +1,7 @@
 {
-    "elements": {},
+    "elements": {
+        "entity-link": {}
+    },
     "attributes": {
         "uib-dropdown-menu": {},
         "uib-dropdown": {
@@ -8,6 +10,9 @@
         "uib-dropdown-toggle": {
             "context": "button"
         },
-        "bs-dropdown": {}
+        "typeid": {},
+        "entityid": {},
+        "bs-dropdown": {},
+        "title": {}
     }
 }

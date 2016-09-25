@@ -13,6 +13,8 @@ public class Bootstrap {
         setPort(PORT);
         staticFileLocation("/public");
         
+        new TablesResource();
+        new TypeResource();
         new UtilsResource();
     }
 }

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.xoduscomparer.logic.CompareDbTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.375 sec
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.128 sec

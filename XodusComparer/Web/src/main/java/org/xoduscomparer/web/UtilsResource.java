@@ -3,31 +3,25 @@ package org.xoduscomparer.web;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.xoduscomparer.logic.CompareDb;
-import org.xoduscomparer.logic.model.CompareDbResult;
-import static spark.Spark.get;
+import spark.Request;
+import spark.Response;
 import static spark.Spark.post;
-import static spark.Spark.put;
 
-public class UtilsResource {
+public class UtilsResource extends BaseResource {
 
-    private static final String API_CONTEXT = "/api/v1";
-
-    //private final TodoService todoService;
+    private static final String END_POINT = API_CONTEXT + "/utils";
 
     public UtilsResource() {
-        setupEndpoints();
+        post(END_POINT + "/compare", "application/json", (req, resp) ->  compare(req, resp), new JsonTransformer());
     }
 
-    private void setupEndpoints() {
-        post(API_CONTEXT + "/utils", "application/json", (request, response) -> {
-            JSONObject obj = JSON.parseObject(request.body());
+    private Object compare(Request request, Response response) {
+        JSONObject obj = JSON.parseObject(request.body());
             
-            CompareDb cmp = new CompareDb(obj.getString("db1"), obj.getString("db2"), obj.getString("key"));
-            Context.getInstance().setCompareDbResult(cmp.compare());
-                        
-            response.status(200);
-            return response;
-        }, new JsonTransformer());
-    }
+        CompareDb cmp = new CompareDb(obj.getString("db1"), obj.getString("db2"), obj.getString("key"));
+        Context.getInstance().setCompareDbResult(cmp.compare());
 
+        response.status(200);
+        return response;
+    }
 }
