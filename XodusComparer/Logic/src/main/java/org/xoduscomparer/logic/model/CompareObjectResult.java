@@ -1,6 +1,7 @@
 package org.xoduscomparer.logic.model;
 
 import java.util.Objects;
+import org.xoduscomparer.logic.helpers.model.EntityView;
 
 /**
  *
@@ -9,18 +10,20 @@ import java.util.Objects;
 public class CompareObjectResult {
     
     private CompareState state;
-    private Object value;
-    private Object value2;
+    private String label;
+    private EntityView value;
+    private EntityView value2;
 
     public CompareObjectResult() {
     }
 
-    public CompareObjectResult(CompareState state, Object value) {
+    public CompareObjectResult(CompareState state, EntityView value) {
         this(state, value, null);
     }
     
-    public CompareObjectResult(CompareState state, Object value, Object value2) {
+    public CompareObjectResult(CompareState state, EntityView value, EntityView value2) {
         this.state = state;
+        this.label = value.getLabel();
         this.value = value;
         this.value2 = value2;
     }
@@ -33,19 +36,28 @@ public class CompareObjectResult {
         this.state = state;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
     public Object getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(EntityView value) {
         this.value = value;
+        this.label = value.getLabel();
     }
 
     public Object getValue2() {
         return value2;
     }
 
-    public void setValue2(Object value2) {
+    public void setValue2(EntityView value2) {
         this.value2 = value2;
     }
 

@@ -1,6 +1,7 @@
 package org.xoduscomparer.web;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.xoduscomparer.logic.model.CompareTableResult;
 import spark.Request;
 import spark.Response;
@@ -21,14 +22,18 @@ public class TypeResource extends BaseResource {
         
         CompareTableResult item = Context.getInstance().getCompareDbResult().getTables().get(name);
                 
-        JSONArray res = new JSONArray();
+        JSONArray items = new JSONArray();
 
         item.getObjects().entrySet().stream().skip(offset).limit(pageSize).forEach(e -> {
-            res.add(e.getValue());
+            items.add(e.getValue());
         });
 
         response.status(200);
 
+        JSONObject res = new JSONObject();
+        res.put("totalCount", item.getObjects().size());
+        res.put("items", items);        
+        
         return res;
     }
 }

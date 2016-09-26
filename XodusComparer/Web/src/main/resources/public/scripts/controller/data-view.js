@@ -33,15 +33,15 @@ app.controller('DataViewController', function ($scope, $routeParams, $http) {
                 var self = this;
                 self.currentPage = pageNo;
 
-                $http.get('api/type/' + $scope.selectedType().id + '/entities', {
+                $http.get('api/v1/type/' + $scope.selectedType() + '/entities', {
                     params: {
                         q: searchTerm,
                         offset: offset,
-                        pageSize: (pageSize ? pageSize : 50)
+                        pageSize: 50
                     }
                 }).then(function (data) {
-                    self.items = data.items;
-                    self.totalCount = data.totalCount;
+                    self.items = data.data.items;
+                    self.totalCount = data.data.totalCount;
                     dataView.isSearchExecuted = true;
                 });
             },

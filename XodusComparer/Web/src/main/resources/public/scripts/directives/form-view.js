@@ -11,7 +11,7 @@ app.directive('formView', [
                 entityTypeId: '='
             },
             replace: true,
-            template: require('../templates/form-view.html'),
+            templateUrl: '../../templates/form-view.html',
             link: function (scope, element) {
                 scope.editMode = (scope.entityId === null);
                 scope.toggleView = function () {

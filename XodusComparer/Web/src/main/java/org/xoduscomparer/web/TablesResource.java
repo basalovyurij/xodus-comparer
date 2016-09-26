@@ -36,7 +36,7 @@ public class TablesResource extends BaseResource {
     private Object getTable(Request request, Response response) {
         String name = request.params(":name");
 
-        CompareTableResult info = Context.getInstance().getCompareDbResult().getTables().get("name");
+        CompareTableResult info = Context.getInstance().getCompareDbResult().getTables().get(name);
         
         JSONObject res = new JSONObject();
         

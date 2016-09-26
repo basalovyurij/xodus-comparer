@@ -10,6 +10,11 @@ public class EntityBlob extends Named {
     public EntityBlob() {
     }
 
+    public EntityBlob(String name, long blobSize) {
+        this.name = name;
+        this.blobSize = blobSize;
+    }
+
     public long getBlobSize() {
         return blobSize;
     }

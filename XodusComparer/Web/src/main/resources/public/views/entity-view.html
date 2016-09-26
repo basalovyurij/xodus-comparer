@@ -1,0 +1,86 @@
+<div>
+    <div data-ng-hide="item().properties.length">
+        No properties
+    </div>
+    <div data-ng-show="item().properties.length">
+        <table class="table table-striped table-condensed preview-entity-properties">
+            <thead>
+                <tr style="font-weight: bold">
+                    <td>Name</td>
+                    <td>Type</td>
+                    <td>Value</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="p in item().properties">
+                    <td>{{p.name}}</td>
+                    <td>{{p.type.displayName}}</td>
+                    <td>{{p.value}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div data-ng-hide="dataView.pager.isExpanded(item())">
+    <a href data-ng-click="dataView.pager.expand(item())"><i class="fa fa-expand"></i>
+        expand</a>
+</div>
+
+<ul data-ng-show="dataView.pager.isExpanded(item())" class="list-group">
+    <li class="list-group-item search-extended-header">Links
+    </li>
+    <li class="list-group-item">
+        <div data-ng-hide="item().links.length">
+            No links
+        </div>
+        <div data-ng-show="item().links.length">
+            <table class="table table-striped table-condensed preview-entity-properties">
+                <thead>
+                    <tr style="font-weight: bold">
+                        <td>Name</td>
+                        <td>Link</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="p in item().links">
+                        <td>{{p.name}}</td>
+                        <td><entity-link
+                    title="{{p.label}}"
+                    typeid="{{p.typeId}}"
+                    entityid="{{p.entityId}}">
+                </entity-link></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </li>
+    <li class="list-group-item search-extended-header">Blobs</li>
+    <li class="list-group-item">
+        <div data-ng-hide="item().blobs.length">
+            No blobs
+        </div>
+        <div data-ng-show="item().blobs.length">
+            <table class="table table-striped table-condensed preview-entity-properties">
+                <thead>
+                    <tr style="font-weight: bold">
+                        <td>Name</td>
+                        <td>Download</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="p in item().blobs">
+                        <td>{{p.name}}</td>
+                        <td>
+                            <a class="btn btn-default" target="_self"
+                               data-ng-href="{{dataView.blobLink(item, p)}}">
+                                <i class="fa fa-download"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </li>
+</ul>

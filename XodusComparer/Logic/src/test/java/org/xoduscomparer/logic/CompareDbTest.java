@@ -64,10 +64,10 @@ public class CompareDbTest {
                         put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
                             {
                                 put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_DIFF,
-                                        new EntityView("0", "test", null, "0", Arrays.asList(
+                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
                                                 new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
                                         ), null, null),
-                                        new EntityView("0", "test", null, "0", Arrays.asList(
+                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
                                                 new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test2")
                                         ), null, null)
                                 ));
@@ -104,7 +104,7 @@ public class CompareDbTest {
                         put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
                             {
                                 put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_EQUAL,
-                                        new EntityView("0", "test", null, "0", Arrays.asList(
+                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
                                                 new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
                                         ), null, null)
                                 ));
