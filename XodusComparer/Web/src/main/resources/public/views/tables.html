@@ -13,6 +13,9 @@
         <th>
             Статус
         </th>
+        <th>
+            Кол-во записей
+        </th>
         <th></th>
     </tr>
     <tr ng-repeat="item in data">
@@ -21,6 +24,9 @@
         </td>
         <td>
             {{item.state}}
+        </td>
+        <td>
+            {{item.totalCount}}
         </td>
         <td>
             <a href="#/type/{{item.name}}">

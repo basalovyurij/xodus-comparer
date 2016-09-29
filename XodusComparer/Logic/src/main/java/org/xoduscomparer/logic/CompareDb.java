@@ -16,6 +16,8 @@ import jetbrains.exodus.entitystore.EntityIterable;
 import jetbrains.exodus.entitystore.PersistentEntityStore;
 import jetbrains.exodus.entitystore.PersistentEntityStores;
 import jetbrains.exodus.env.Environments;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.xoduscomparer.logic.helpers.Transform;
 import org.xoduscomparer.logic.helpers.model.EntityView;
 
@@ -25,26 +27,30 @@ import org.xoduscomparer.logic.helpers.model.EntityView;
  */
 public class CompareDb {
 
+    private final static Logger logger = LogManager.getLogger(CompareDb.class);
+    
     private final String pathDb1;
     private final String pathDb2;
-    private final String key;
+    private final String key1;
+    private final String key2;
 
     private PersistentEntityStore store1;
     private PersistentEntityStore store2;
 
     public CompareDb(String pathDb1, String pathDb2) {
-        this(pathDb1, pathDb2, null);
+        this(pathDb1, null, pathDb2, null);
     }
     
-    public CompareDb(String pathDb1, String pathDb2, String key) {
+    public CompareDb(String pathDb1, String key1, String pathDb2, String key2) {
         this.pathDb1 = pathDb1;
         this.pathDb2 = pathDb2;
-        this.key = key;
+        this.key1 = key2;
+        this.key2 = key2;
     }
 
     public CompareDbResult compare() {
-        store1 = PersistentEntityStores.newInstance(Environments.newInstance(pathDb1), key);
-        store2 = PersistentEntityStores.newInstance(Environments.newInstance(pathDb2), key);
+        store1 = PersistentEntityStores.newInstance(Environments.newInstance(pathDb1), key1);
+        store2 = PersistentEntityStores.newInstance(Environments.newInstance(pathDb2), key2);
 
         try {
             return compareTables(new HashSet<>(getTables(store1)), new HashSet<>(getTables(store2)));
@@ -56,27 +62,39 @@ public class CompareDb {
 
     private CompareDbResult compareTables(Set<String> s1, Set<String> s2) {
         CompareResult<String> tableCompareResults = compare(s1, s2);
-
+        
         CompareDbResult result = new CompareDbResult();
         result.setTables(new HashMap<>());
 
-        tableCompareResults.onlyFirst.forEach(t -> {
+        int count = tableCompareResults.onlyFirst.size();
+        int i = 1;
+        logger.info(String.format("Found %s tables only in first DB", count));
+        for(String t : tableCompareResults.onlyFirst) {
             CompareTableResult cmp = compareObjects(getTableContent(store1, t), new HashMap<>());
             cmp.setState(CompareState.EXIST_ONLY_FIRST);
             result.getTables().put(t, cmp);
-        });
+            logger.info(String.format("Compared %s of %s tabled", i++, count));
+        };
 
-        tableCompareResults.intersection.forEach(t -> {
+        count = tableCompareResults.intersection.size();
+        i = 1;
+        logger.info(String.format("Found %s tables interstion", count));
+        for(String t : tableCompareResults.intersection) {
             CompareTableResult cmp = compareObjects(getTableContent(store1, t), getTableContent(store2, t));
             cmp.setState(CompareState.EXIST_BOTH);
             result.getTables().put(t, cmp);
-        });
+            logger.info(String.format("Compared %s of %s tabled", i++, count));
+        }
 
-        tableCompareResults.onlySecond.forEach(t -> {
+        count = tableCompareResults.onlySecond.size();
+        i = 1;
+        logger.info(String.format("Found %s tables only in second DB", count));
+        for(String t : tableCompareResults.onlySecond) {
             CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store1, t));
             cmp.setState(CompareState.EXIST_ONLY_SECOND);
             result.getTables().put(t, cmp);
-        });
+            logger.info(String.format("Compared %s of %s tabled", i++, count));
+        }
 
         return result;
     }

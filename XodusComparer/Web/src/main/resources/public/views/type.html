@@ -1,9 +1,13 @@
-<a class="btn btn-primary pull-right" href="#/save">
+<a class="margin-5 btn btn-primary pull-right" href="#/save">
     <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
     Сохранить сравнение
 </a>
+<a class="margin-5 btn btn-primary pull-right" href="#/tables">
+    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+    Назад
+</a>
 
 <h1>Таблица <b>{{table.name}}</b></h1>
-<h3>Всего записей: {{table.objCount}}</h3>
+<h3>Всего записей: {{table.totalCount}}</h3>
 
 <dataview selected-type="table.name"></dataview>

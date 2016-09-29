@@ -14,11 +14,11 @@ import java.nio.file.Paths;
  */
 public class CompareResultManager {
 
-    public CompareDbResult load(String path) throws IOException {
+    public static CompareDbResult load(String path) throws IOException {
         return JSON.parseObject(new String(Files.readAllBytes(Paths.get(path))), CompareDbResult.class);
     }
 
-    public void save(String path, CompareDbResult db) throws IOException {
+    public static void save(String path, CompareDbResult db) throws IOException {
         try (FileWriter writer = new FileWriter(new File(path))) {
             writer.write(JSON.toJSONString(db));
         }

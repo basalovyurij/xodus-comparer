@@ -4,6 +4,9 @@ app.directive('entityview', function () {
         scope: {
             item: '&'
         },
-        templateUrl: '../../views/entity-view.html'
+        templateUrl: '../../views/entity-view.html',
+        link: function(scope) {
+            scope.dataView = scope.$parent.dataView;
+        }
     };
 });

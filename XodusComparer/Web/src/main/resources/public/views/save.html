@@ -1,0 +1,10 @@
+<form name="setupForm">
+    <div class="form-group" data-ng-class="{'has-error': (data.path.$invalid && data.path.$dirty)}">
+        <label for="db1">Выберите путь для сохранения сравнения</label>
+        <input class="form-control" data-ng-required="true" ng-model="data.path" id="db1" placeholder="Путь к файлу в формате JSON">
+    </div>
+
+    <button type="submit" ng-click="submit()" class="btn btn-primary">Сохранить</button>
+</form>
+
+<div ng-show="loading" class="loading"></div>

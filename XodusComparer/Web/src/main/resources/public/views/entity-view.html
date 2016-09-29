@@ -23,12 +23,15 @@
 </div>
 
 <div data-ng-hide="dataView.pager.isExpanded(item())">
-    <a href data-ng-click="dataView.pager.expand(item())"><i class="fa fa-expand"></i>
-        expand</a>
+    <a href data-ng-click="dataView.pager.expand(item())">
+        <span class="glyphicon glyphicon-resize-full"></span>
+        expand
+    </a>
 </div>
 
 <ul data-ng-show="dataView.pager.isExpanded(item())" class="list-group">
-    <li class="list-group-item search-extended-header">Links
+    <li class="list-group-item search-extended-header">
+        Links
     </li>
     <li class="list-group-item">
         <div data-ng-hide="item().links.length">

@@ -55,7 +55,7 @@ app.controller('DataViewController', function ($scope, $routeParams, $http) {
                 this.expanded[entity.id] = true;
             },
             isExpanded: function (entity) {
-                return angular.isDefined(this.expanded[entity.id]);
+                return entity && angular.isDefined(this.expanded[entity.id]);
             }
         };
     }

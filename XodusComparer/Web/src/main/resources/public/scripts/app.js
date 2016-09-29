@@ -14,16 +14,20 @@ app.config(function ($routeProvider) {
                 controller: 'SetupNewController'
             })
             .when('/setup/load', {
-                templateUrl: 'views/setup-old.html',
-                controller: 'SetupOldController'
+                templateUrl: 'views/setup-load.html',
+                controller: 'SetupLoadController'
+            })
+            .when('/save', {
+                templateUrl: 'views/save.html',
+                controller: 'SaveController'
             })
             .when('/tables', {
                 templateUrl: 'views/tables.html',
-                controller: 'TablesCtrl'
+                controller: 'TablesController'
             })
             .when('/type/:name', {
                 templateUrl: 'views/type.html',
-                controller: 'TypeCtrl'
+                controller: 'TypeController'
             })
             .otherwise({
                 redirectTo: '/setup'

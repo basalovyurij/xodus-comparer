@@ -1,4 +1,4 @@
-app.controller('TypeCtrl', function ($scope, $http, $routeParams) {
+app.controller('TypeController', function ($scope, $http, $routeParams) {
     
     var name = $routeParams.name;
     

@@ -1,4 +1,4 @@
-app.controller('TablesCtrl', function ($scope, $http) {
+app.controller('TablesController', function ($scope, $http) {
     $scope.data = [];
 
     $http

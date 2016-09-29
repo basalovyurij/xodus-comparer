@@ -12,6 +12,8 @@ public class TypeResource extends BaseResource {
     private static final String END_POINT = API_CONTEXT + "/type";
 
     public TypeResource() {
+        super();
+        
         get(END_POINT + "/:name/entities", "application/json", (req, resp) -> getEntities(req, resp), new JsonTransformer());
     }
 
