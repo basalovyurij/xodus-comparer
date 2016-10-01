@@ -15,12 +15,25 @@ import java.nio.file.Paths;
 public class CompareResultManager {
 
     public static CompareDbResult load(String path) throws IOException {
-        return JSON.parseObject(new String(Files.readAllBytes(Paths.get(path))), CompareDbResult.class);
+        CompareDbResult cmp = JSON.parseObject(new String(Files.readAllBytes(Paths.get(path))), CompareDbResult.class);
+        
+        cmp.setSavePath(path);
+        cmp.setSize(new File(path).length());
+        
+        return cmp;
     }
 
-    public static void save(String path, CompareDbResult db) throws IOException {
+    public static void save(String path, CompareDbResult cmp) throws IOException {
+        cmp.setSavePath(null);
+        cmp.setSize(null);
+        
         try (FileWriter writer = new FileWriter(new File(path))) {
-            writer.write(JSON.toJSONString(db));
+            writer.write(JSON.toJSONString(cmp));
+        }
+        
+        if(cmp.getSavePath() == null) {
+            cmp.setSavePath(path);
+            cmp.setSize(new File(path).length());
         }
     }
 }

@@ -1,5 +1,10 @@
 app.controller('SaveController', function ($scope, $http, $location) {
-    
+
+    if (!app.status.inited) {
+        $location.path('/setup');
+        return;
+    }
+
     $scope.submit = function () {
         if ($scope.setupForm.$valid) {
             $scope.loading = true;

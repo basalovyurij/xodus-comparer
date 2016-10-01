@@ -1,4 +1,10 @@
-app.controller('TablesController', function ($scope, $http) {
+app.controller('TablesController', function ($scope, $http, $location) {
+
+    if (!app.status.inited) {
+        $location.path('/setup');
+        return;
+    }
+
     $scope.data = [];
 
     $http

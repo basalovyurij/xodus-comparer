@@ -9,6 +9,10 @@ import java.util.Objects;
  */
 public class CompareDbResult {
 
+    private String dbPath1;
+    private String dbPath2;
+    private String savePath;
+    private Long size;
     private Map<String, CompareTableResult> tables;
 
     public CompareDbResult() {
@@ -18,6 +22,38 @@ public class CompareDbResult {
         this.tables = tables;
     }
 
+    public String getDbPath1() {
+        return dbPath1;
+    }
+
+    public void setDbPath1(String dbPath1) {
+        this.dbPath1 = dbPath1;
+    }
+
+    public String getDbPath2() {
+        return dbPath2;
+    }
+
+    public void setDbPath2(String dbPath2) {
+        this.dbPath2 = dbPath2;
+    }
+
+    public String getSavePath() {
+        return savePath;
+    }
+
+    public void setSavePath(String savePath) {
+        this.savePath = savePath;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+    
     public Map<String, CompareTableResult> getTables() {
         return tables;
     }
@@ -29,7 +65,7 @@ public class CompareDbResult {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.tables);
+        hash = 67 * hash + Objects.hashCode(this.tables);
         return hash;
     }
 
