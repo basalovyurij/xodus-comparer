@@ -1,7 +1,11 @@
 package org.xoduscomparer.web;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
 import org.xoduscomparer.logic.CompareDb;
 import org.xoduscomparer.logic.CompareResultManager;
 import org.xoduscomparer.logic.model.CompareDbResult;
@@ -15,27 +19,30 @@ public class UtilsResource extends BaseResource {
 
     public UtilsResource() {
         super();
-        
+
         post(END_POINT + "/status", "application/json", (req, resp) -> status(req, resp), new JsonTransformer());
         post(END_POINT + "/compare", "application/json", (req, resp) -> compare(req, resp), new JsonTransformer());
         post(END_POINT + "/save", "application/json", (req, resp) -> save(req, resp), new JsonTransformer());
         post(END_POINT + "/load", "application/json", (req, resp) -> load(req, resp), new JsonTransformer());
+        post(END_POINT + "/filesystem", "application/json", (req, resp) -> filesystem(req, resp), new JsonTransformer());
     }
 
     private Object status(Request request, Response response) {
         JSONObject obj = new JSONObject();
 
+        obj.put("directorySeparator", File.separator);
+
         response.status(200);
-        
+
         CompareDbResult cmp = Context.getInstance().getCompareDbResult();
-        if(cmp != null) {
+        if (cmp != null) {
             obj.put("inited", true);
             obj.put("dbPath1", cmp.getDbPath1());
             obj.put("dbPath2", cmp.getDbPath2());
             obj.put("savePath", cmp.getSavePath());
             obj.put("size", cmp.getSize());
         }
-                    
+
         return obj;
     }
 
@@ -57,7 +64,7 @@ public class UtilsResource extends BaseResource {
             logger.info(String.format("Start save comprasion to [%s]", path));
             CompareDbResult cmp = Context.getInstance().getCompareDbResult();
             logger.info(String.format("Successuful save comprasion to [%s]", path));
-        
+
             CompareResultManager.save(path, cmp);
             response.status(200);
         } catch (Exception e) {
@@ -75,14 +82,70 @@ public class UtilsResource extends BaseResource {
             logger.info(String.format("Start load comprasion from [%s]", path));
             CompareDbResult cmp = CompareResultManager.load(path);
             logger.info(String.format("Successuful load comprasion from [%s]", path));
-        
+
             Context.getInstance().setCompareDbResult(cmp);
-            
+
             response.status(200);
         } catch (Exception e) {
             response.status(500);
             logger.error("", e);
         }
         return response;
+    }
+
+    private Object filesystem(Request request, Response response) {
+        try {
+            String path = null;
+            if (request.body() != null && !request.body().isEmpty()) {
+                JSONObject obj = JSON.parseObject(request.body());
+                path = obj.getString("path");
+            }
+
+            File[] files;
+            if (path == null || path.isEmpty()) {
+                files = File.listRoots();
+            } else {
+                files = new File(path).listFiles();
+            }
+
+            JSONArray fileList = new JSONArray();
+            if (files != null) {
+                Arrays.asList(files)
+                        .stream()
+                        .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                        .forEach(file -> fileList.add(getInfo(file)));
+            }
+
+            response.status(200);
+            return fileList;
+        } catch (Exception e) {
+            response.status(500);
+            logger.error("", e);
+            return response;
+        }
+    }
+
+    private JSONObject getInfo(File file) {
+        JSONObject obj = new JSONObject();
+
+        obj.put("folder", file.isDirectory());
+        obj.put("name", file.getName().isEmpty() ? "/" : file.getName());
+        if (!file.isDirectory()) {
+            obj.put("size", formatFileSize(file.length()));
+        }
+        obj.put("type", "");
+        obj.put("dateModified", new Date(file.lastModified()));
+
+        if (file.isDirectory()) {
+            obj.put("children", new JSONArray());
+        }
+
+        return obj;
+    }
+
+    private String formatFileSize(Long bytes) {
+        String[] units = new String[]{"B", "КB", "MB", "GB", "TB", "PB"};
+        Double number = bytes == 0L ? 0 : Math.floor(Math.log(bytes) / Math.log(1024));
+        return String.format("%.2f %s", bytes.doubleValue() / Math.pow(1024, Math.floor(number)), units[number.intValue()]);
     }
 }
