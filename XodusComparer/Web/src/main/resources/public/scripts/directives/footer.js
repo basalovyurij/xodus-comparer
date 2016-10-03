@@ -5,14 +5,13 @@ app.directive('footer', function ($uibModal) {
         link: function (scope) {
             scope.status = app.status;
             
-            scope.showModal = function (size) {
+            scope.showModal = function () {
                 $uibModal.open({
                     ariaLabelledBy: 'modal-title',
                     ariaDescribedBy: 'modal-body',
-                    templateUrl: '../../views/modal.html',
-                    controller: 'ModalInstanceCtrl',
+                    templateUrl: '../../views/info-modal.html',
+                    controller: 'InfoModalInstanceCtrl',
                     controllerAs: '$ctrl',
-                    size: size,
                     resolve: {
                         status: function () {
                             return app.status;
@@ -24,7 +23,7 @@ app.directive('footer', function ($uibModal) {
     };
 });
 
-app.controller('ModalInstanceCtrl', function ($uibModalInstance) {
+app.controller('InfoModalInstanceCtrl', function ($uibModalInstance) {
     var $ctrl = this;
     $ctrl.cancel = function () {
         $uibModalInstance.dismiss('cancel');

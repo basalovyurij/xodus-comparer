@@ -55,6 +55,9 @@ public class CompareDb {
         try {
             return compareTables(new HashSet<>(getTables(store1)), new HashSet<>(getTables(store2)));
         } finally {
+            store1.getEnvironment().suspendGC();
+            store2.getEnvironment().suspendGC();
+            
             store1.close();
             store2.close();
         }
