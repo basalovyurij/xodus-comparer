@@ -67,6 +67,8 @@ public class CompareDb {
         CompareResult<String> tableCompareResults = compare(s1, s2);
         
         CompareDbResult result = new CompareDbResult();
+        result.setDbPath1(pathDb1);
+        result.setDbPath1(pathDb2);
         result.setTables(new HashMap<>());
 
         int count = tableCompareResults.onlyFirst.size();

@@ -2,7 +2,7 @@ app.directive('filebrowser', function ($uibModal) {
     return {
         restrict: 'E',
         scope: {
-            ngId: '=',
+            ngId: '@',
             ngModel: '=',
             placeholder: '@'
         },

@@ -1,7 +1,7 @@
 <form name="setupForm">
     <div class="form-group" data-ng-class="{'has-error': (data.db1.$invalid && data.db1.$dirty)}">
         <label for="db1">Выберите первую БД для сравнения</label>
-        <input class="form-control" data-ng-required="true" ng-model="data.db1" id="db1" placeholder="Путь к папке с БД">
+        <filebrowser ng-id="db1" placeholder="Путь к папке с БД" ng-model="data.db1"></filebrowser>
     </div>
 
     <div class="form-group" data-ng-class="{'has-error': (data.key1.$invalid && data.key1.$dirty)}">
@@ -10,12 +10,12 @@
             <input id="key"  data-ng-required="true" ng-model="data.key1" class="form-control" placeholder="Ключ открытия БД">
             <div class="input-group-btn">
                 <div class="btn-group" uib-dropdown>
-                    <button id="simple-dropdown"  type="button" class="btn btn-default" uib-dropdown-toggle>
+                    <button id="simple-dropdown1"  type="button" class="btn btn-default" uib-dropdown-toggle>
                         Предустановленные ключи <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                    <ul class="dropdown-menu" role="menu" uib-dropdown-menu aria-labelledby="simple-dropdown1">
                         <li ng-repeat="key in predefinedKeys">
-                            <a href data-ng-click="applyKey(key)">{{key.name}}</a>
+                            <a href data-ng-click="applyKey('key1', key)">{{key.name}}</a>
                         </li>
                     </ul>
                 </div>
@@ -25,7 +25,7 @@
 
     <div class="form-group" data-ng-class="{'has-error': (data.db2.$invalid && data.db2.$dirty)}">
         <label for="db2">Выберите вторую БД для сравнения</label>
-        <input class="form-control" data-ng-required="true" ng-model="data.db2" id="db2" placeholder="Путь к папке с БД">
+        <filebrowser ng-id="db2" placeholder="Путь к папке с БД" ng-model="data.db2"></filebrowser>
     </div>
 
     <div class="form-group" data-ng-class="{'has-error': (data.key2.$invalid && data.key2.$dirty)}">
@@ -34,12 +34,12 @@
             <input id="key"  data-ng-required="true" ng-model="data.key2" class="form-control" placeholder="Ключ открытия БД">
             <div class="input-group-btn">
                 <div class="btn-group" uib-dropdown>
-                    <button id="simple-dropdown"  type="button" class="btn btn-default" uib-dropdown-toggle>
+                    <button id="simple-dropdown2"  type="button" class="btn btn-default" uib-dropdown-toggle>
                         Предустановленные ключи <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                    <ul class="dropdown-menu" role="menu" uib-dropdown-menu aria-labelledby="simple-dropdown2">
                         <li ng-repeat="key in predefinedKeys">
-                            <a href data-ng-click="applyKey(key)">{{key.name}}</a>
+                            <a href data-ng-click="applyKey('key2', key)">{{key.name}}</a>
                         </li>
                     </ul>
                 </div>

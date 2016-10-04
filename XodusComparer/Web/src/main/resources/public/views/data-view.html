@@ -27,19 +27,35 @@
                                 </h4>
                                 
                                 <h4 class="panel-title pull-right">
-                                    <b>{{item.state}}</b>
+                                    Статус: <b>{{item.state.description}}</b>
                                 </h4>
                             </div>
                             <div class="panel-body">
-                                <div data-ng-hide="item.value2">
+                                <div data-ng-show="item.state.value == 1">
                                     <entityview item="item.value"></entityview>
                                 </div>
-                                <div class="row" data-ng-show="item.value2">
+                                <div class="row" data-ng-show="item.state.value == 2">
+                                    <div class="col-xs-6">
+                                        <h4>Запись в БД 1</h4>
+                                        <entityview item="item.value"></entityview>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <h4>Запись в БД 2</h4>
+                                        <entityview item="item.value2"></entityview>
+                                    </div>
+                                </div>
+                                <div class="row" data-ng-show="item.state.value == 3">
                                     <div class="col-xs-6">
                                         <entityview item="item.value"></entityview>
                                     </div>
                                     <div class="col-xs-6">
-                                        <entityview item="item.value2"></entityview>
+                                    </div>
+                                </div>
+                                <div class="row" data-ng-show="item.state.value == 4">
+                                    <div class="col-xs-6">
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <entityview item="item.value"></entityview>
                                     </div>
                                 </div>
                             </div>
