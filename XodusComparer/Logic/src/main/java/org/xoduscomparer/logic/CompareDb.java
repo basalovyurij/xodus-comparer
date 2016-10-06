@@ -95,7 +95,7 @@ public class CompareDb {
         i = 1;
         logger.info(String.format("Found %s tables only in second DB", count));
         for(String t : tableCompareResults.onlySecond) {
-            CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store1, t));
+            CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store2, t));
             cmp.setState(CompareState.EXIST_ONLY_SECOND);
             result.getTables().put(t, cmp);
             logger.info(String.format("Compared %s of %s tabled", i++, count));
@@ -109,8 +109,7 @@ public class CompareDb {
 
         CompareTableResult result = new CompareTableResult();
         result.setObjects(new HashMap<>());
-
-        // TODO
+        
         objectCompareResults.onlyFirst.forEach(t -> {
             result.getObjects().put(t, new CompareObjectResult(CompareState.EXIST_ONLY_FIRST, s1.get(t)));
         });
@@ -158,7 +157,7 @@ public class CompareDb {
                 .collect(Collectors.toList());
 
         Set<T> intersection = new HashSet<>(s1);
-        intersection.retainAll(s2);
+        intersection.retainAll(new HashSet<>(s2));
 
         List<T> onlySecond = s2.stream()
                 .filter(i -> !s1.contains(i))
@@ -172,8 +171,8 @@ public class CompareDb {
                 .filter(i -> !s2.containsKey(i))
                 .collect(Collectors.toList());
 
-        Set<K> intersection = s1.keySet();
-        intersection.retainAll(s2.keySet());
+        Set<K> intersection = new HashSet<>(s1.keySet());
+        intersection.retainAll(new HashSet<>(s2.keySet()));
 
         List<K> onlySecond = s2.keySet().stream()
                 .filter(i -> !s1.containsKey(i))

@@ -36,6 +36,49 @@ public class CompareDbTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
+            /****************************************
+             * Equal DB
+             ****************************************/
+            {
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                new CompareDbResult(new HashMap<String, CompareTableResult>() {
+                    {
+                        put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_EQUAL,
+                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null)
+                                ));
+                            }
+                        }));
+                    }
+                })
+            },
+            /*****************************************
+             * DB with one equal table and one object which diffs
+             ****************************************/
             {
                 createDb(new HashMap<String, List<Map<String, Comparable>>>() {
                     {
@@ -76,10 +119,69 @@ public class CompareDbTest {
                     }
                 })
             },
+            /*****************************************
+             * DB with different tables
+             ****************************************/
+            {
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test2", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test3", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                new CompareDbResult(new HashMap<String, CompareTableResult>() {
+                    {
+                        put("test2", new CompareTableResult(CompareState.EXIST_ONLY_FIRST, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_ONLY_FIRST,
+                                        new EntityView("0", "test2", "test2[0]", "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null)
+                                ));
+                            }
+                        }));
+                        put("test3", new CompareTableResult(CompareState.EXIST_ONLY_SECOND, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_ONLY_SECOND,
+                                        new EntityView("0", "test3", "test3[0]", "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null)
+                                ));
+                            }
+                        }));
+                    }
+                })
+            },
+            /*****************************************
+             * DB with different tables 2
+             ****************************************/
             {
                 createDb(new HashMap<String, List<Map<String, Comparable>>>() {
                     {
                         put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                        put("test2", Arrays.asList(
                                 new HashMap<String, Comparable>() {
                             {
                                 put("123", "test");
@@ -91,6 +193,13 @@ public class CompareDbTest {
                 createDb(new HashMap<String, List<Map<String, Comparable>>>() {
                     {
                         put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test");
+                            }
+                        }
+                        ));
+                        put("test3", Arrays.asList(
                                 new HashMap<String, Comparable>() {
                             {
                                 put("123", "test");
@@ -104,7 +213,25 @@ public class CompareDbTest {
                         put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
                             {
                                 put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_EQUAL,
-                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
+                                        new EntityView("0", "test", "test[0]", "1", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null)
+                                ));
+                            }
+                        }));
+                        put("test2", new CompareTableResult(CompareState.EXIST_ONLY_FIRST, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_ONLY_FIRST,
+                                        new EntityView("0", "test2", "test2[0]", "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null)
+                                ));
+                            }
+                        }));
+                        put("test3", new CompareTableResult(CompareState.EXIST_ONLY_SECOND, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_ONLY_SECOND,
+                                        new EntityView("0", "test3", "test3[0]", "0", Arrays.asList(
                                                 new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
                                         ), null, null)
                                 ));
