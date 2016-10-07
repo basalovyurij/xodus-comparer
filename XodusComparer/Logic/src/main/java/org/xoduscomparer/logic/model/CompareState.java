@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
  *
  * @author yurij
  */
-public enum CompareState implements JSONSerializable {
+public enum CompareState {
     
     EXIST_BOTH(0, "Присутствует в обоих"),
     EXIST_BOTH_EQUAL(1, "Присутствует в обоих и равны"),
@@ -32,13 +32,5 @@ public enum CompareState implements JSONSerializable {
 
     public String getDescription() {
         return description;
-    }
-    
-    @Override
-    public void write(JSONSerializer serializer, Object fieldName, Type fieldType, int features) throws IOException {
-        JSONObject json = new JSONObject();
-        json.put("value", value);
-        json.put("description", description);
-        serializer.write(json);
-    }
+    }   
 }

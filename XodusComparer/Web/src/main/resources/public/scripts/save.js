@@ -9,7 +9,7 @@ app.controller('SaveController', function ($scope, $http, $location) {
         if ($scope.setupForm.$valid) {
             $scope.loading = true;
             $http
-                    .post('/api/v1/utils/load', $scope.data)
+                    .post('/api/v1/utils/save', $scope.data)
                     .success(function (data) {
                         $scope.loading = false;
                         $location.path('/tables');

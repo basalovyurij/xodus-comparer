@@ -9,18 +9,18 @@
 <div class="modal-body" id="modal-body">
     <div class="row">
         <div class="col-xs-4">Первая БД</div>
-        <div class="col-xs-8">{{status.dpPath1 || '&mdash;'}}</div>
+        <div class="col-xs-8">{{$ctrl.status.dpPath1 || '&mdash;'}}</div>
     </div>
     <div class="row">
         <div class="col-xs-4">Вторая БД</div>
-        <div class="col-xs-8">{{status.dpPath2 || '&mdash;'}}</div>
+        <div class="col-xs-8">{{$ctrl.status.dpPath2 || '&mdash;'}}</div>
     </div>
     <div class="row">
         <div class="col-xs-4">Путь к сравнению</div>
-        <div class="col-xs-8">{{status.savePath || '&mdash;'}}</div>
+        <div class="col-xs-8">{{$ctrl.status.savePath || '&mdash;'}}</div>
     </div>
     <div class="row">
         <div class="col-xs-4">Размер</div>
-        <div class="col-xs-8">{{status.size ? (status.size | bytes) : '&mdash;'}}</div>
+        <div class="col-xs-8">{{$ctrl.status.size ? (status.size | bytes) : '&mdash;'}}</div>
     </div>
 </div>

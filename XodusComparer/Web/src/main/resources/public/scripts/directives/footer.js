@@ -11,12 +11,7 @@ app.directive('footer', function ($uibModal) {
                     ariaDescribedBy: 'modal-body',
                     templateUrl: '../../views/info-modal.html',
                     controller: 'InfoModalInstanceCtrl',
-                    controllerAs: '$ctrl',
-                    resolve: {
-                        status: function () {
-                            return app.status;
-                        }
-                    }
+                    controllerAs: '$ctrl'
                 });
             };
         }
@@ -25,6 +20,7 @@ app.directive('footer', function ($uibModal) {
 
 app.controller('InfoModalInstanceCtrl', function ($uibModalInstance) {
     var $ctrl = this;
+    $ctrl.status = app.status;
     $ctrl.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };

@@ -44,6 +44,7 @@ public class UtilsResource extends BaseResource {
             obj.put("size", cmp.getSize());
         }
 
+
         return obj;
     }
 
