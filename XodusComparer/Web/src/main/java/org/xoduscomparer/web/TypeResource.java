@@ -14,7 +14,7 @@ public class TypeResource extends BaseResource {
     public TypeResource() {
         super();
         
-        get(END_POINT + "/:name/entities", "application/json", (req, resp) -> getEntities(req, resp), new JsonTransformer());
+        get(END_POINT + "/:name/entities", "application/json", wrap((req, resp) -> getEntities(req, resp)), new JsonTransformer());
     }
 
     private Object getEntities(Request request, Response response) {

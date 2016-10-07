@@ -14,8 +14,8 @@ public class TablesResource extends BaseResource {
     public TablesResource() {
         super();
         
-        get(END_POINT, "application/json", (req, resp) -> getTables(req, resp), new JsonTransformer());
-        get(END_POINT + "/:name", "application/json", (req, resp) -> getTable(req, resp), new JsonTransformer());
+        get(END_POINT, "application/json", wrap((req, resp) -> getTables(req, resp)), new JsonTransformer());
+        get(END_POINT + "/:name", "application/json", wrap((req, resp) -> getTable(req, resp)), new JsonTransformer());
     }
 
     private Object getTables(Request request, Response response) {

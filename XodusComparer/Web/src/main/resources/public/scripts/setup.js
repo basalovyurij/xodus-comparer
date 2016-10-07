@@ -1,7 +1,7 @@
 app.controller('SetupController', function () {
 });
 
-app.controller('SetupNewController', function ($scope, $http, $location, status) {
+app.controller('SetupNewController', function ($scope, $http, $location, status, errorHandler) {
     $scope.predefinedKeys = [
         {name: 'Hub', key: 'jetPassServerDb'},
         {name: 'YouTrack', key: 'teamsysstore'}
@@ -25,12 +25,16 @@ app.controller('SetupNewController', function ($scope, $http, $location, status)
                                 $location.path('/tables');
                             }
                         });
+                    })
+                    .error(function (error) {
+                        $scope.loading = false;
+                        errorHandler(error);
                     });
         }
     };
 });
 
-app.controller('SetupLoadController', function ($scope, $http, $location, status) {
+app.controller('SetupLoadController', function ($scope, $http, $location, status, errorHandler) {
     $scope.data = {};
 
     $scope.submit = function () {
@@ -45,6 +49,10 @@ app.controller('SetupLoadController', function ($scope, $http, $location, status
                                 $location.path('/tables');
                             }
                         });
+                    })
+                    .error(function (error) {
+                        $scope.loading = false;
+                        errorHandler(error);
                     });
         }
     };

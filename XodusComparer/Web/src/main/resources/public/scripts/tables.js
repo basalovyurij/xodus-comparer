@@ -11,5 +11,8 @@ app.controller('TablesController', function ($scope, $http, $location) {
             .get('/api/v1/tables')
             .success(function (data) {
                 $scope.data = data;
+            })
+            .error(function (error) {
+                errorHandler(error);
             });
 });

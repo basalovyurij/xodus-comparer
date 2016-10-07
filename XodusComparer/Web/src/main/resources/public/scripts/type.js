@@ -1,5 +1,5 @@
 app.controller('TypeController', function ($scope, $http, $routeParams, $location) {
-    
+
     if (!app.status.inited) {
         $location.path('/setup');
         return;
@@ -13,5 +13,8 @@ app.controller('TypeController', function ($scope, $http, $routeParams, $locatio
             .get('/api/v1/tables/' + name)
             .success(function (data) {
                 $scope.table = data;
+            })
+            .error(function (error) {
+                errorHandler(error);
             });
 });

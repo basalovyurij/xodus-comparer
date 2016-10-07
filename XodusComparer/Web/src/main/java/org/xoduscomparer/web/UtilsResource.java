@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import org.xoduscomparer.logic.CompareDb;
@@ -20,11 +21,11 @@ public class UtilsResource extends BaseResource {
     public UtilsResource() {
         super();
 
-        post(END_POINT + "/status", "application/json", (req, resp) -> status(req, resp), new JsonTransformer());
-        post(END_POINT + "/compare", "application/json", (req, resp) -> compare(req, resp), new JsonTransformer());
-        post(END_POINT + "/save", "application/json", (req, resp) -> save(req, resp), new JsonTransformer());
-        post(END_POINT + "/load", "application/json", (req, resp) -> load(req, resp), new JsonTransformer());
-        post(END_POINT + "/filesystem", "application/json", (req, resp) -> filesystem(req, resp), new JsonTransformer());
+        post(END_POINT + "/status", "application/json", wrap((req, resp) -> status(req, resp)), new JsonTransformer());
+        post(END_POINT + "/compare", "application/json", wrap((req, resp) -> compare(req, resp)), new JsonTransformer());
+        post(END_POINT + "/save", "application/json", wrap((req, resp) -> save(req, resp)), new JsonTransformer());
+        post(END_POINT + "/load", "application/json", wrap((req, resp) -> load(req, resp)), new JsonTransformer());
+        post(END_POINT + "/filesystem", "application/json", wrap((req, resp) -> filesystem(req, resp)), new JsonTransformer());
     }
 
     private Object status(Request request, Response response) {
@@ -56,73 +57,55 @@ public class UtilsResource extends BaseResource {
         return response;
     }
 
-    private Object save(Request request, Response response) {
-        try {
-            JSONObject obj = JSON.parseObject(request.body());
-            String path = obj.getString("path");
+    private Object save(Request request, Response response) throws IOException {
+        JSONObject obj = JSON.parseObject(request.body());
+        String path = obj.getString("path");
 
-            logger.info(String.format("Start save comprasion to [%s]", path));
-            CompareDbResult cmp = Context.getInstance().getCompareDbResult();
-            logger.info(String.format("Successuful save comprasion to [%s]", path));
+        logger.info(String.format("Start save comprasion to [%s]", path));
+        CompareDbResult cmp = Context.getInstance().getCompareDbResult();
+        logger.info(String.format("Successuful save comprasion to [%s]", path));
 
-            CompareResultManager.save(path, cmp);
-            response.status(200);
-        } catch (Exception e) {
-            response.status(500);
-            logger.error("", e);
-        }
+        CompareResultManager.save(path, cmp);
+        
         return response;
     }
 
-    private Object load(Request request, Response response) {
-        try {
-            JSONObject obj = JSON.parseObject(request.body());
-            String path = obj.getString("path");
+    private Object load(Request request, Response response) throws IOException {
+        JSONObject obj = JSON.parseObject(request.body());
+        String path = obj.getString("path");
 
-            logger.info(String.format("Start load comprasion from [%s]", path));
-            CompareDbResult cmp = CompareResultManager.load(path);
-            logger.info(String.format("Successuful load comprasion from [%s]", path));
+        logger.info(String.format("Start load comprasion from [%s]", path));
+        CompareDbResult cmp = CompareResultManager.load(path);
+        logger.info(String.format("Successuful load comprasion from [%s]", path));
 
-            Context.getInstance().setCompareDbResult(cmp);
+        Context.getInstance().setCompareDbResult(cmp);
 
-            response.status(200);
-        } catch (Exception e) {
-            response.status(500);
-            logger.error("", e);
-        }
         return response;
     }
 
     private Object filesystem(Request request, Response response) {
-        try {
-            String path = null;
-            if (request.body() != null && !request.body().isEmpty()) {
-                JSONObject obj = JSON.parseObject(request.body());
-                path = obj.getString("path");
-            }
-
-            File[] files;
-            if (path == null || path.isEmpty()) {
-                files = File.listRoots();
-            } else {
-                files = new File(path).listFiles();
-            }
-
-            JSONArray fileList = new JSONArray();
-            if (files != null) {
-                Arrays.asList(files)
-                        .stream()
-                        .sorted((a, b) -> a.getName().compareTo(b.getName()))
-                        .forEach(file -> fileList.add(getInfo(file)));
-            }
-
-            response.status(200);
-            return fileList;
-        } catch (Exception e) {
-            response.status(500);
-            logger.error("", e);
-            return response;
+        String path = null;
+        if (request.body() != null && !request.body().isEmpty()) {
+            JSONObject obj = JSON.parseObject(request.body());
+            path = obj.getString("path");
         }
+
+        File[] files;
+        if (path == null || path.isEmpty()) {
+            files = File.listRoots();
+        } else {
+            files = new File(path).listFiles();
+        }
+
+        JSONArray fileList = new JSONArray();
+        if (files != null) {
+            Arrays.asList(files)
+                    .stream()
+                    .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                    .forEach(file -> fileList.add(getInfo(file)));
+        }
+
+        return fileList;
     }
 
     private JSONObject getInfo(File file) {

@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h1 class="modal-title" id="modal-title">
+        Ошибка
+        <button type="button" class="close" ng-click="$ctrl.cancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </h1>
+</div>
+<div class="modal-body" id="modal-body">
+    <h3>{{$ctrl.error.message.length > 100 ? $ctrl.error.message.substring(0, 100) + "..." : $ctrl.error.message}}</h3>
+    <span>{{$ctrl.error.stacktrace}}</span>
+</div>

@@ -239,6 +239,53 @@ public class CompareDbTest {
                         }));
                     }
                 })
+            },
+            /*****************************************
+             * DB with different objects
+             ****************************************/
+            {
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test1");
+                                put("1234", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                createDb(new HashMap<String, List<Map<String, Comparable>>>() {
+                    {
+                        put("test", Arrays.asList(
+                                new HashMap<String, Comparable>() {
+                            {
+                                put("123", "test2");
+                                put("1235", "test");
+                            }
+                        }
+                        ));
+                    }
+                }),
+                new CompareDbResult(new HashMap<String, CompareTableResult>() {
+                    {
+                        put("test", new CompareTableResult(CompareState.EXIST_BOTH, new HashMap<Long, CompareObjectResult>() {
+                            {
+                                put(0L, new CompareObjectResult(CompareState.EXIST_BOTH_DIFF,
+                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test1"),
+                                                new EntityProperty("1234", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null),
+                                        new EntityView("0", "test", "test[0]", "0", Arrays.asList(
+                                                new EntityProperty("123", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test2"),
+                                                new EntityProperty("1235", new PropertyType(false, String.class.getName(), String.class.getSimpleName()), "test")
+                                        ), null, null)
+                                ));
+                            }
+                        }));
+                    }
+                })
             }
         });
     }

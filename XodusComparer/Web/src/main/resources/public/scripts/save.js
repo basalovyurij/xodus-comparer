@@ -13,6 +13,10 @@ app.controller('SaveController', function ($scope, $http, $location) {
                     .success(function (data) {
                         $scope.loading = false;
                         $location.path('/tables');
+                    })
+                    .error(function (error) {
+                        $scope.loading = false;
+                        errorHandler(error);
                     });
         }
     };
