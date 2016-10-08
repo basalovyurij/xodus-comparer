@@ -76,10 +76,6 @@ public class UtilsResource extends BaseResource {
         JSONObject obj = JSON.parseObject(request.body());
         String path = obj.getString("path");
 
-        if(!new File(path).exists()) {
-            return validationErrors(response, Arrays.asList("Файл не существует"));
-        }
-        
         logger.info(String.format("Start save comprasion to [%s]", path));
         CompareDbResult cmp = Context.getInstance().getCompareDbResult();
         logger.info(String.format("Successuful save comprasion to [%s]", path));

@@ -30,7 +30,7 @@ app.config(function ($routeProvider) {
                 controller: 'TypeController'
             })
             .otherwise({
-                redirectTo: '/setup'
+                redirectTo: '/tables'
             });
 });
 

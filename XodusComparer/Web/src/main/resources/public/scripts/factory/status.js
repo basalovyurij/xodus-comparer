@@ -4,7 +4,7 @@ app.factory('status', function ($http, $location) {
 
             options = (options || {});
 
-            var successCallback = (options.success || (function () { $location.path('/tables'); }));
+            var successCallback = (options.success || (function () { }));
 
             $http
                     .post('/api/v1/utils/status', {})
