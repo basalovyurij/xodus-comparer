@@ -8,6 +8,8 @@ import java.util.Objects;
  */
 public class PropertyType {
 
+    public final static PropertyType STRING = new PropertyType(false, String.class.getName(), String.class.getSimpleName());
+    
     private boolean readonly;
     private String clazz;
     private String displayName;

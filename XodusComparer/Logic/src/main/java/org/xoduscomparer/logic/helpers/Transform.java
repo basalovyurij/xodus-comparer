@@ -19,16 +19,21 @@ public class Transform {
     public static EntityView asView(Entity entity) {
         EntityView res = asLightView(entity);
 
-        res.setBlobs(
-                entity.getBlobNames().stream()
-                .map(it -> blobView(entity, it))
-                .collect(Collectors.toList()));    
-        
-        res.setLinks(
-                entity.getLinkNames().stream()
-                .map(it -> linkView(entity, it))
-                .collect(Collectors.toList())); 
-        
+        if (!entity.getLinkNames().isEmpty()) {
+            res.setLinks(
+                    entity.getLinkNames().stream()
+                    .map(it -> linkView(entity, it))
+                    .collect(Collectors.toList()));
+        }
+
+        if (!entity.getBlobNames().isEmpty()) {
+            res.setBlobs(
+                    entity.getBlobNames().stream()
+                    .map(it -> blobView(entity, it))
+                    .collect(Collectors.toList()));
+
+        }
+
         return res;
     }
 
@@ -83,21 +88,21 @@ public class Transform {
     private static EntityLink linkView(Entity entity, String name) {
         EntityLink res = new EntityLink();
         res.setName(name);
-        
+
         Entity link = entity.getLink(name);
         if (link != null) {
             EntityView lightVO = asLightView(link);
             EntityId linkId = link.getId();
-            
+
             res.setTypeId(linkId.getTypeId());
             res.setEntityId(linkId.getLocalId());
             res.setLabel(lightVO.getLabel());
             res.setType(lightVO.getType());
         }
-        
+
         return res;
     }
-    
+
     private static <T extends Comparable> String value2string(T value) {
         if (value == null) {
             return null;

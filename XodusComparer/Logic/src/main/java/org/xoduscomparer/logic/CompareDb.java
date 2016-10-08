@@ -138,7 +138,7 @@ public class CompareDb {
         store.computeInReadonlyTransaction(txn -> {
             EntityIterable entities = txn.getAll(tableName);
             for (Entity entity : entities) {
-                result.put(entity.getId().getLocalId(), Transform.asLightView(entity));
+                result.put(entity.getId().getLocalId(), Transform.asView(entity));
             }
             return true;
         });

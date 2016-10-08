@@ -17,6 +17,24 @@ public class EntityView extends BaseVO {
 
     public EntityView() {
     }
+    
+    public EntityView(List<EntityProperty> properties) {
+        this.properties = properties;
+    }
+    
+    public EntityView(List<EntityProperty> properties, List<EntityLink> links, List<EntityBlob> blobs) {
+        this.properties = properties;
+        this.links = links;
+        this.blobs = blobs;
+    }      
+
+    public EntityView(String id, String type, String label, String typeId, List<EntityProperty> properties) {
+        this.id = id;
+        this.type = type;
+        this.label = label;
+        this.typeId = typeId;
+        this.properties = properties;
+    }  
 
     public EntityView(String id, String type, String label, String typeId, List<EntityProperty> properties, List<EntityLink> links, List<EntityBlob> blobs) {
         this.id = id;

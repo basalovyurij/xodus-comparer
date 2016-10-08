@@ -14,6 +14,12 @@ public class EntityProperty extends Named {
     public EntityProperty() {
     }
 
+    public EntityProperty(String name, String value) {
+        this.name = name;
+        this.value = value;
+        this.type = PropertyType.STRING;        
+    }
+
     public EntityProperty(String name, PropertyType type, String value) {
         this.name = name;
         this.type = type;
