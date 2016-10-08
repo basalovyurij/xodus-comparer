@@ -51,6 +51,20 @@ public class UtilsResource extends BaseResource {
     private Object compare(Request request, Response response) {
         JSONObject obj = JSON.parseObject(request.body());
 
+        File f1 = new File(obj.getString("db1"));
+        if(!f1.exists() || !f1.isDirectory()) {
+            return validationErrors(response, Arrays.asList("Путь к певой БД не существует или не валиден"));
+        }
+        
+        File f2 = new File(obj.getString("db2"));
+        if(!f2.exists() || !f2.isDirectory()) {
+            return validationErrors(response, Arrays.asList("Путь ко второй БД не существует или не валиден"));
+        }
+        
+        if(obj.getString("db1").equalsIgnoreCase(obj.getString("db2"))) {
+            return validationErrors(response, Arrays.asList("Пути к сравнивыемым БД должны быть различными"));
+        }
+        
         CompareDb cmp = new CompareDb(obj.getString("db1"), obj.getString("key1"), obj.getString("db2"), obj.getString("key2"));
         Context.getInstance().setCompareDbResult(cmp.compare());
 
@@ -62,6 +76,10 @@ public class UtilsResource extends BaseResource {
         JSONObject obj = JSON.parseObject(request.body());
         String path = obj.getString("path");
 
+        if(!new File(path).exists()) {
+            return validationErrors(response, Arrays.asList("Файл не существует"));
+        }
+        
         logger.info(String.format("Start save comprasion to [%s]", path));
         CompareDbResult cmp = Context.getInstance().getCompareDbResult();
         logger.info(String.format("Successuful save comprasion to [%s]", path));
@@ -75,6 +93,10 @@ public class UtilsResource extends BaseResource {
         JSONObject obj = JSON.parseObject(request.body());
         String path = obj.getString("path");
 
+        if(!new File(path).exists()) {
+            return validationErrors(response, Arrays.asList("Файл не существует"));
+        }
+        
         logger.info(String.format("Start load comprasion from [%s]", path));
         CompareDbResult cmp = CompareResultManager.load(path);
         logger.info(String.format("Successuful load comprasion from [%s]", path));

@@ -6,7 +6,7 @@ app.controller('SaveController', function ($scope, $http, $location) {
     }
 
     $scope.submit = function () {
-        if ($scope.setupForm.$valid) {
+        if ($scope.form.$valid) {
             $scope.loading = true;
             $http
                     .post('/api/v1/utils/save', $scope.data)
@@ -16,7 +16,11 @@ app.controller('SaveController', function ($scope, $http, $location) {
                     })
                     .error(function (error) {
                         $scope.loading = false;
-                        errorHandler(error);
+                        if (error.validationErrors) {
+                            $scope.validationErrors = error.validationErrors;
+                        } else {
+                            errorHandler(error);
+                        }
                     });
         }
     };

@@ -1,8 +1,13 @@
-<form name="setupForm">
-    <div class="form-group" data-ng-class="{'has-error': (data.path.$invalid && data.path.$dirty)}">
+<form name="form">
+    <div class="alert-danger alert validationErrors" ng-show="validationErrors">
+        <ul>
+            <li ng-repeat="error in validationErrors">{{error}}</li>
+        </ul>
+    </div> 
+
+    <div class="form-group">
         <label for="path">Выберите путь c сохраненным сравнением</label>
         <filebrowser ng-id="path" placeholder="Путь к файлу в формате JSON" ng-model="data.path"></filebrowser>
-        <div ng-show="form.path.$error.required">Tell us your name.</div>
     </div>
 
     <button type="submit" ng-click="submit()" class="btn btn-primary">Загрузить</button>

@@ -3,6 +3,7 @@ package org.xoduscomparer.web;
 import com.alibaba.fastjson.JSONObject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.function.BiFunction;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -43,7 +44,14 @@ public class BaseResource {
         };
     }
 
-    private final String getStackTrace(final Throwable throwable) {
+    protected JSONObject validationErrors(Response response, Collection<String> errors) {
+        response.status(400);
+        JSONObject res = new JSONObject();
+        res.put("validationErrors", errors);
+        return res;
+    }
+    
+    private String getStackTrace(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw, true);
         throwable.printStackTrace(pw);

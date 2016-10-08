@@ -14,7 +14,7 @@ app.controller('SetupNewController', function ($scope, $http, $location, status,
     $scope.data = {};
 
     $scope.submit = function () {
-        if ($scope.setupForm.$valid) {
+        if ($scope.form.$valid) {
             $scope.loading = true;
             $http
                     .post('/api/v1/utils/compare', $scope.data)
@@ -28,7 +28,11 @@ app.controller('SetupNewController', function ($scope, $http, $location, status,
                     })
                     .error(function (error) {
                         $scope.loading = false;
-                        errorHandler(error);
+                        if (error.validationErrors) {
+                            $scope.validationErrors = error.validationErrors;
+                        } else {
+                            errorHandler(error);
+                        }
                     });
         }
     };
@@ -38,7 +42,7 @@ app.controller('SetupLoadController', function ($scope, $http, $location, status
     $scope.data = {};
 
     $scope.submit = function () {
-        if ($scope.setupForm.$valid) {
+        if ($scope.form.$valid) {
             $scope.loading = true;
             $http
                     .post('/api/v1/utils/load', $scope.data)
@@ -52,7 +56,11 @@ app.controller('SetupLoadController', function ($scope, $http, $location, status
                     })
                     .error(function (error) {
                         $scope.loading = false;
-                        errorHandler(error);
+                        if (error.validationErrors) {
+                            $scope.validationErrors = error.validationErrors;
+                        } else {
+                            errorHandler(error);
+                        }
                     });
         }
     };
