@@ -78,10 +78,9 @@ public class UtilsResource extends BaseResource {
 
         logger.info(String.format("Start save comprasion to [%s]", path));
         CompareDbResult cmp = Context.getInstance().getCompareDbResult();
+        CompareResultManager.save(path, cmp);
         logger.info(String.format("Successuful save comprasion to [%s]", path));
 
-        CompareResultManager.save(path, cmp);
-        
         return response;
     }
 

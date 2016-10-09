@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import javafx.util.Pair;
 import jetbrains.exodus.entitystore.Entity;
 import jetbrains.exodus.entitystore.EntityIterable;
 import jetbrains.exodus.entitystore.PersistentEntityStore;
@@ -28,7 +30,7 @@ import org.xoduscomparer.logic.helpers.model.EntityView;
 public class CompareDb {
 
     private final static Logger logger = LogManager.getLogger(CompareDb.class);
-    
+
     private final String pathDb1;
     private final String pathDb2;
     private final String key1;
@@ -40,7 +42,7 @@ public class CompareDb {
     public CompareDb(String pathDb1, String pathDb2) {
         this(pathDb1, null, pathDb2, null);
     }
-    
+
     public CompareDb(String pathDb1, String key1, String pathDb2, String key2) {
         this.pathDb1 = pathDb1;
         this.pathDb2 = pathDb2;
@@ -57,49 +59,60 @@ public class CompareDb {
         } finally {
             store1.getEnvironment().suspendGC();
             store2.getEnvironment().suspendGC();
-            
+
             store1.close();
             store2.close();
+            
+            System.gc();
         }
     }
 
     private CompareDbResult compareTables(Set<String> s1, Set<String> s2) {
         CompareResult<String> tableCompareResults = compare(s1, s2);
-        
+
         CompareDbResult result = new CompareDbResult();
         result.setDbPath1(pathDb1);
         result.setDbPath2(pathDb2);
         result.setTables(new HashMap<>());
 
-        int count = tableCompareResults.onlyFirst.size();
-        int i = 1;
-        logger.info(String.format("Found %s tables only in first DB", count));
-        for(String t : tableCompareResults.onlyFirst) {
-            CompareTableResult cmp = compareObjects(getTableContent(store1, t), new HashMap<>());
-            cmp.setState(CompareState.EXIST_ONLY_FIRST);
-            result.getTables().put(t, cmp);
-            logger.info(String.format("Compared %s of %s tabled", i++, count));
-        };
+        final int countOnlyFirst = tableCompareResults.onlyFirst.size();
+        final AtomicInteger counterOnlyFirst = new AtomicInteger();
+        logger.info(String.format("Found %s tables only in first DB", countOnlyFirst));
+        tableCompareResults.onlyFirst.parallelStream()
+                .map(t -> {
+                    CompareTableResult cmp = compareObjects(getTableContent(store1, t), new HashMap<>());
+                    cmp.setState(CompareState.EXIST_ONLY_FIRST);
+                    logger.info(String.format("Compared %s of %s tabled", counterOnlyFirst.incrementAndGet(), countOnlyFirst));
+                    return new Pair<>(t, cmp);
+                })
+                .collect(Collectors.toList())
+                .forEach(e -> result.getTables().put(e.getKey(), e.getValue()));
 
-        count = tableCompareResults.intersection.size();
-        i = 1;
-        logger.info(String.format("Found %s tables interstion", count));
-        for(String t : tableCompareResults.intersection) {
-            CompareTableResult cmp = compareObjects(getTableContent(store1, t), getTableContent(store2, t));
-            cmp.setState(CompareState.EXIST_BOTH);
-            result.getTables().put(t, cmp);
-            logger.info(String.format("Compared %s of %s tabled", i++, count));
-        }
+        final int countIntersection = tableCompareResults.intersection.size();
+        final AtomicInteger counterIntersection = new AtomicInteger();
+        logger.info(String.format("Found %s tables intersection", countIntersection));
+        tableCompareResults.intersection.parallelStream()
+                .map(t -> {
+                    CompareTableResult cmp = compareObjects(getTableContent(store1, t), getTableContent(store2, t));
+                    cmp.setState(CompareState.EXIST_BOTH);
+                    logger.info(String.format("Compared %s of %s tabled", counterIntersection.incrementAndGet(), countIntersection));
+                    return new Pair<>(t, cmp);
+                })
+                .collect(Collectors.toList())
+                .forEach(e -> result.getTables().put(e.getKey(), e.getValue()));
 
-        count = tableCompareResults.onlySecond.size();
-        i = 1;
-        logger.info(String.format("Found %s tables only in second DB", count));
-        for(String t : tableCompareResults.onlySecond) {
-            CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store2, t));
-            cmp.setState(CompareState.EXIST_ONLY_SECOND);
-            result.getTables().put(t, cmp);
-            logger.info(String.format("Compared %s of %s tabled", i++, count));
-        }
+        final int countOnlySecond = tableCompareResults.onlySecond.size();
+        final AtomicInteger counterOnlySecond = new AtomicInteger();
+        logger.info(String.format("Found %s tables only in second DB", countOnlySecond));
+        tableCompareResults.onlySecond.parallelStream()
+                .map(t -> {
+                    CompareTableResult cmp = compareObjects(new HashMap<>(), getTableContent(store2, t));
+                    cmp.setState(CompareState.EXIST_ONLY_SECOND);
+                    logger.info(String.format("Compared %s of %s tabled", counterOnlySecond.incrementAndGet(), countOnlySecond));
+                    return new Pair<>(t, cmp);
+                })
+                .collect(Collectors.toList())
+                .forEach(e -> result.getTables().put(e.getKey(), e.getValue()));
 
         return result;
     }
@@ -109,7 +122,7 @@ public class CompareDb {
 
         CompareTableResult result = new CompareTableResult();
         result.setObjects(new HashMap<>());
-        
+
         objectCompareResults.onlyFirst.forEach(t -> {
             result.getObjects().put(t, new CompareObjectResult(CompareState.EXIST_ONLY_FIRST, s1.get(t)));
         });
@@ -147,8 +160,8 @@ public class CompareDb {
     }
 
     private Collection<String> getTables(PersistentEntityStore store) {
-        return store.computeInReadonlyTransaction(txn -> 
-                txn.getEntityTypes());
+        return store.computeInReadonlyTransaction(txn
+                -> txn.getEntityTypes());
     }
 
     private <T> CompareResult<T> compare(Set<T> s1, Set<T> s2) {
